@@ -4,7 +4,7 @@
 
 1. Explain the problem: finding a clip is only part of editing; the producer needs a usable sequence and its source references.
 2. Show **Urban movement** and its three shot requests.
-3. Search, open one candidate, inspect the source timecodes and approve it. Show that the coverage board updates only after review.
+3. Search and use **Suggest story edit**. Explain that W&B evaluates the supplied descriptions. Open a recommendation, inspect its source footage/timecodes and approve it only after review. The AI call itself leaves coverage and the cut unchanged.
 4. Show a request for which candidates are unsuitable and use **None fit — mark a scene gap**. Keep the editorial gap visible.
 5. Open **Your first cut**, show the reviewed order and export the MP4. Download the source shot list with it.
 6. Close with: **“ClipScout returns an editable first cut with source references, not just a list of search results.”** The demonstration uses indexed archive footage; do not describe it as live capture.
@@ -55,7 +55,9 @@ Use the same queries, ranking parameters and reviewer rubric for both runs. Keep
 - Scene-gap check: a marathon finish request produced unsuitable street candidates; marking the gap kept coverage at 3/4 and left the three-shot cut unchanged.
 - App render: 15.000 seconds, 360 frames, 1280×720 at 24 fps, H.264, no audio; FFmpeg decode completed without errors.
 - Source-list download: both the independent list and rendered-job list downloaded through the Codex browser. Labels, parent-relative source times and cumulative cut times match the three-shot sequence.
-- Seven regression tests pass, covering source mapping, background-search reuse/cache/refresh/failure, download attachment and catalog/job restoration.
+- 29 tests pass: source mapping, background search, downloads/restoration, model-output validation and server-side advisor integration.
+- Live W&B call: four requests / three candidates, 1.73 seconds, three valid recommendations and one potential gap. Deployed UI call also succeeded, with the review checkbox unchecked and coverage unchanged at 3/4.
+- Controlled redeploy: the saved 15-second export and its source-list endpoint survived; SHA-256 before/after matched.
 
 ## Protect before adding scope
 

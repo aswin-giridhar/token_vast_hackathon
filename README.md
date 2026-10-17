@@ -4,6 +4,8 @@ Turn a shot request into reviewed footage, an ordered MP4 rough cut and a source
 
 **Demo:** open the workshop portal's **View app** link, or [the deployed ClipScout desk](https://team-32-app.thecosmoslabs.com/app/) with your workshop access.
 
+**[Watch/download the 79-second walkthrough](https://github.com/aswin-giridhar/token_vast_hackathon/raw/refs/heads/main/docs/demo/ClipScout_Walkthrough.mp4)** · [Submission pack](docs/SUBMISSION.md). The walkthrough combines real app captures with the actual exported footage and English on-screen explanations.
+
 ## What works
 
 1. Enter a story brief and shot requests. The starter story is **Urban movement**: cyclist, pedestrians crossing, wide highway traffic.

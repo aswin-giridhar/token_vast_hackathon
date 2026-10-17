@@ -75,13 +75,13 @@ Push the branch and open a PR if the agent has repository write access. Otherwis
 | --- | --- | --- |
 | Specific video use case | Story brief → reviewed rough cut | A |
 | Provided video stack | Real VSS searches and source footage; NVIDIA/VAST-backed index | A |
-| Application-level W&B inference | Missing; Track B supplies module, Track A verifies live integration | B → A |
+| Application-level W&B inference | Complete: Track B module integrated; real call and deployed UI verified | B → A |
 | SpaceXAI/Cursor contribution | Complete: PR #1, branch track-b-wandb-editorial-advisor | B |
 | Working deployment | Team app is deployed; final regression/download check remains | A |
 | Source provenance and gaps | Source timecodes/list; explicit gap keeps request open | A |
 | Technical quality/evaluation | 29 tests pass; render/source-list verified; small assistant visual baseline labeled | A; B tests its module |
 | Accessible GitHub repository | Public repository and code pushed | A |
-| Short demo video, shareable link | Still needed; output montage alone is insufficient | A + team |
+| Short demo video, shareable link | Complete: 79-second annotated walkthrough plus actual output; see docs/SUBMISSION.md | A + team |
 | Tools-used description | Existing truthful README; add verified W&B and Cursor evidence | B → A |
 | Team names/contact emails | Team must provide and verify these at submission | Team |
 | Final submission | Form requires sign-in; not submitted | Team, assisted by A |

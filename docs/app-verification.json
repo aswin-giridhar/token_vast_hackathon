@@ -1,0 +1,48 @@
+{
+  "verified_on": "2026-10-17",
+  "automated_tests_passed": 29,
+  "browser_checks": {
+    "real_search": true,
+    "live_wandb_advice": true,
+    "suggestions_leave_cut_and_coverage_unchanged": true,
+    "approval_checkbox_initially_unchecked": true,
+    "scene_gap_visible": true,
+    "mp4_download": true,
+    "independent_source_list_download": true,
+    "render_source_list_download": true
+  },
+  "output": {
+    "duration_sec": 15.0,
+    "frames": 360,
+    "width": 1280,
+    "height": 720,
+    "fps": "24/1",
+    "codec": "h264",
+    "audio": "silent",
+    "decode_passed": true,
+    "sha256": "85da5a3589ee27cc4e5b06d7c9debba1740c661f0fbe37c82fc421e2185fa63b",
+    "visual_boundary_times_sec": [
+      0.1,
+      4.9,
+      5.1,
+      9.9,
+      10.1,
+      14.9
+    ],
+    "visual_boundary_review": "passed: cyclist, crossing and highway in the intended order; no black transition frames observed"
+  },
+  "deployment_recovery": {
+    "controlled_redeploy_retained_finished_job": true,
+    "source_manifest_endpoint_restored": true,
+    "download_sha256_unchanged": true,
+    "persistent_volume": "Unavailable: trial claim bound, but mount failed. Empty trial resources removed; deployment uses VM backup/restore."
+  },
+  "reingest": {
+    "approved_chunks": 10,
+    "expected_segments": 60,
+    "exact_destination_sources_in_direct_database_read": 41,
+    "descriptions_with_explicit_shot_type_label": 0,
+    "status": "incomplete / prompt application unverified",
+    "resubmitted": false
+  }
+}

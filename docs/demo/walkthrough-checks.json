@@ -1,0 +1,11 @@
+{
+  "kind": "annotated_walkthrough",
+  "duration_sec": 79,
+  "frames": 1896,
+  "width": 1920,
+  "height": 1080,
+  "fps": "24/1",
+  "decode_passed": true,
+  "audio": "silent",
+  "content": "Real app screenshots plus the actual 15-second exported cut; not a continuous screen recording."
+}
