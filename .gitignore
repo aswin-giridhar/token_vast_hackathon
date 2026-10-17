@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+.venv/
+.env
+.env.*
+*.config
+*k8s.yaml
+*.pem
+*.key
+output/
+data/
+render-proof/
+reingest-plan/
+*.mp4
+*.mov
+*.webm
+*.log

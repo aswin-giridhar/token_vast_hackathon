@@ -1,0 +1,68 @@
+{
+  "passed_mechanical_checks": true,
+  "visual_review": "passed: six extracted frames at 0.1, 3.9, 4.1, 7.9, 8.1 and 11.9 seconds inspected; expected cyclist, crossing and highway footage; no black cut boundaries",
+  "sources": [
+    {
+      "order": 1,
+      "streams": [
+        {
+          "type": "video",
+          "codec": "h264",
+          "width": 1920,
+          "height": 1080,
+          "fps": "2997/100"
+        },
+        {
+          "type": "audio",
+          "codec": "aac",
+          "width": null,
+          "height": null,
+          "fps": "0/0"
+        }
+      ],
+      "duration": "5.005005"
+    },
+    {
+      "order": 2,
+      "streams": [
+        {
+          "type": "video",
+          "codec": "h264",
+          "width": 1920,
+          "height": 1080,
+          "fps": "2997/100"
+        },
+        {
+          "type": "audio",
+          "codec": "aac",
+          "width": null,
+          "height": null,
+          "fps": "0/0"
+        }
+      ],
+      "duration": "5.005005"
+    },
+    {
+      "order": 3,
+      "streams": [
+        {
+          "type": "video",
+          "codec": "h264",
+          "width": 1920,
+          "height": 1080,
+          "fps": "30/1"
+        }
+      ],
+      "duration": "5.000000"
+    }
+  ],
+  "output": {
+    "duration_sec": 12.0,
+    "frames": 288,
+    "fps": "24/1",
+    "width": 1280,
+    "height": 720,
+    "audio": "silent"
+  },
+  "render_elapsed_sec": 19.1
+}
