@@ -35,6 +35,8 @@ python3 tools/verify_reingest.py
 
 Completion requires all **60/60** destination segments indexed, expected metadata retained, and descriptions inspected for the requested editorial attributes. The existing source slots should be replaced without duplicate segment slots. A successful submission response alone is not completion.
 
+**Batch status at handoff, 17 October 2026:** all ten requests were accepted and 60 destination segments are present in storage, but **0/60 are indexed**. The progress API returns `404: Re-ingest job not found (backend may have restarted)`. The dashboard still shows 3,537 indexed clips, 60 pending segments and zero duplicate slots. Backend and model health checks pass; the detector, reasoner and writer logs show no POST requests over the checked 25-minute interval. Event delivery needs investigation by the workshop operator. Do not submit the batch again. The app demo uses the working existing index and does not depend on this enhancement completing.
+
 The 707-character prompt asks for observable subjects/actions, shot type, camera angle, framing, camera motion, subject motion, obstructions and useful action beats. It prohibits invented identities, emotions, intent, speech and unseen events. See the `PROMPT` constant in `tools/prepare_reingest.py` for its exact text.
 
 ## Evaluation
@@ -50,6 +52,7 @@ Use the same queries, ranking parameters and reviewer rubric for both runs. Keep
 - Evidence tests: parent-relative timecodes remain intact; upload time is not treated as capture time; invalid sources are rejected; a ranked segment is not replaced by a different grouped preview.
 - First render gate: three four-second sources, 12.000 seconds, 288 frames, 1280×720 at 24 fps; decode succeeded. Six frames around the cuts were inspected.
 - Deployed browser flow: real searches for cyclist, pedestrians and highway traffic; source previews; explicit review; three-shot coverage; sequence reorder and restore; MP4 export.
+- Scene-gap check: a marathon finish request produced unsuitable street candidates; marking the gap kept coverage at 3/4 and left the three-shot cut unchanged.
 - App render: 15.000 seconds, 360 frames, 1280×720 at 24 fps, H.264, no audio; FFmpeg decode completed without errors.
 
 ## Protect before adding scope

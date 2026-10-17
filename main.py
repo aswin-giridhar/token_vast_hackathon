@@ -196,13 +196,15 @@ class Handler(BaseHTTPRequestHandler):
         # Do not log URLs, request bodies, upstream responses or auth material.
         pass
 
-    def reply(self, status, value):
+    def reply(self, status, value, filename=None):
         data = json.dumps(value).encode()
         self.send_response(status)
         self.send_header("Content-Type", "application/json; charset=utf-8")
         self.send_header("Content-Length", str(len(data)))
         self.send_header("Cache-Control", "no-store")
         self.send_header("X-Content-Type-Options", "nosniff")
+        if filename:
+            self.send_header("Content-Disposition", f'attachment; filename="{filename}"')
         self.end_headers()
         self.wfile.write(data)
 
@@ -247,7 +249,7 @@ class Handler(BaseHTTPRequestHandler):
                     return self.reply(404, {"error": "Export job not found"})
                 if len(parts) == 5 and parts[4] == "sources" and job["status"] == "done":
                     source_list = DATA / "renders" / job_id / "source-shot-list.json"
-                    return self.reply(200, json.loads(source_list.read_text()))
+                    return self.reply(200, json.loads(source_list.read_text()), "ClipScout_Source_Shot_List.json")
                 if len(parts) == 5 and parts[4] == "download" and job["status"] == "done":
                     target = DATA / "renders" / job_id / "clipscout-rough-cut.mp4"
                     self.send_response(200)
