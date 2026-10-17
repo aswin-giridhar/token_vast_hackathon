@@ -1,0 +1,198 @@
+{
+  "evaluated_on": "2026-10-17",
+  "reviewer": "Codex visual assessment; independent human review pending",
+  "method": "Five temporally ordered frames per five-second segment, approximately 0.1 to 4.1 seconds at 1 fps. Labels use visible content and position changes, not captions or similarity scores.",
+  "retrieval": {
+    "top_k": 5,
+    "llm_top_n": 1,
+    "min_similarity": 0.3,
+    "include_public": true,
+    "run": "Frozen pre-reingest raw VSS top five; not the UI parent-diversified top six"
+  },
+  "rubric": {
+    "cyclist": "A visible cyclist riding on an urban street; first-person filming is acceptable.",
+    "crossing": "At least one pedestrian visibly traverses a marked street crosswalk.",
+    "traffic": "A wide view establishes multiple highway lanes with vehicles visibly moving."
+  },
+  "results": [
+    {
+      "query": "A cyclist riding through a city street",
+      "relevant": 5,
+      "returned": 5,
+      "precision_at_5": 1.0,
+      "unique_parent_chunks": 4
+    },
+    {
+      "query": "Pedestrians crossing a street at a crosswalk",
+      "relevant": 5,
+      "returned": 5,
+      "precision_at_5": 1.0,
+      "unique_parent_chunks": 5
+    },
+    {
+      "query": "A wide view of moving traffic on a highway",
+      "relevant": 5,
+      "returned": 5,
+      "precision_at_5": 1.0,
+      "unique_parent_chunks": 5
+    }
+  ],
+  "labels": [
+    {
+      "query": "A cyclist riding through a city street",
+      "rank": 1,
+      "source_id": "0ef7377ac34f6d2de4999ffd",
+      "source_filename": "20261008_072651_GOPR0130_chunk_0007_segment_002_of_006.mp4",
+      "source_in_sec": 5.0,
+      "source_out_sec": 10.0,
+      "relevant": true,
+      "review_note": "A cyclist ahead and the camera rider move along an urban street past scaffolding."
+    },
+    {
+      "query": "A cyclist riding through a city street",
+      "rank": 2,
+      "source_id": "81f434e472af3be409c154ba",
+      "source_filename": "20261008_072625_GOPR0130_chunk_0006_segment_005_of_006.mp4",
+      "source_in_sec": 20.0,
+      "source_out_sec": 25.0,
+      "relevant": true,
+      "review_note": "A cyclist rides through marked urban lanes and an intersection."
+    },
+    {
+      "query": "A cyclist riding through a city street",
+      "rank": 3,
+      "source_id": "3cc4d1da33b939bad2fa8dbd",
+      "source_filename": "20261008_072716_GOPR0130_chunk_0008_segment_006_of_006.mp4",
+      "source_in_sec": 25.0,
+      "source_out_sec": 30.0,
+      "relevant": true,
+      "review_note": "A cyclist ahead advances across crosswalk markings on a city street."
+    },
+    {
+      "query": "A cyclist riding through a city street",
+      "rank": 4,
+      "source_id": "c7b3b57ac3a870b662582263",
+      "source_filename": "20261008_072716_GOPR0130_chunk_0008_segment_005_of_006.mp4",
+      "source_in_sec": 20.0,
+      "source_out_sec": 25.0,
+      "relevant": true,
+      "review_note": "Two cyclists ride along a street beside construction barriers."
+    },
+    {
+      "query": "A cyclist riding through a city street",
+      "rank": 5,
+      "source_id": "3ff47587b609252300ea640f",
+      "source_filename": "20261008_072857_GOPR0130_chunk_0012_segment_006_of_006.mp4",
+      "source_in_sec": 25.0,
+      "source_out_sec": 30.0,
+      "relevant": true,
+      "review_note": "A cyclist ahead rides through a city intersection with vehicles nearby."
+    },
+    {
+      "query": "Pedestrians crossing a street at a crosswalk",
+      "rank": 1,
+      "source_id": "6f6878ff761e98e8880c1d97",
+      "source_filename": "20261008_070346_VID_20261006_174811_003_chunk_0014_segment_006_of_006.mp4",
+      "source_in_sec": 25.0,
+      "source_out_sec": 30.0,
+      "relevant": true,
+      "review_note": "Multiple pedestrians change position across the marked zebra crossing."
+    },
+    {
+      "query": "Pedestrians crossing a street at a crosswalk",
+      "rank": 2,
+      "source_id": "2b32789b8727cec77d911576",
+      "source_filename": "20261008_070412_VID_20261006_174811_003_chunk_0015_segment_006_of_006.mp4",
+      "source_in_sec": 25.0,
+      "source_out_sec": 30.0,
+      "relevant": true,
+      "review_note": "Pedestrians traverse the marked crossing in front of the same storefront."
+    },
+    {
+      "query": "Pedestrians crossing a street at a crosswalk",
+      "rank": 3,
+      "source_id": "489c7ef2fe3bd3c5304f3862",
+      "source_filename": "20261001_101759_sf4_chunk_0026_segment_001_of_006.mp4",
+      "source_in_sec": 0.0,
+      "source_out_sec": 5.0,
+      "relevant": true,
+      "review_note": "Pedestrians walk across a broad zebra crossing, viewed near street level."
+    },
+    {
+      "query": "Pedestrians crossing a street at a crosswalk",
+      "rank": 4,
+      "source_id": "fd779d59e3fdc441252f2c85",
+      "source_filename": "20261008_070230_VID_20261006_174811_003_chunk_0011_segment_003_of_006.mp4",
+      "source_in_sec": 10.0,
+      "source_out_sec": 15.0,
+      "relevant": true,
+      "review_note": "Pedestrians move across the zebra crossing at the intersection."
+    },
+    {
+      "query": "Pedestrians crossing a street at a crosswalk",
+      "rank": 5,
+      "source_id": "69d639eae314c62f0f9e2f7e",
+      "source_filename": "20261008_070503_VID_20261006_174811_003_chunk_0017_segment_004_of_006.mp4",
+      "source_in_sec": 15.0,
+      "source_out_sec": 20.0,
+      "relevant": true,
+      "review_note": "A group traverses the zebra crossing while others approach."
+    },
+    {
+      "query": "A wide view of moving traffic on a highway",
+      "rank": 1,
+      "source_id": "cf9b896f15ff01d496cb7ca3",
+      "source_filename": "20261001_055547_scene1_p1c1_chunk_0007_segment_004_of_006.mp4",
+      "source_in_sec": 15.0,
+      "source_out_sec": 20.0,
+      "relevant": true,
+      "review_note": "An elevated wide view shows vehicles changing position in multiple highway lanes."
+    },
+    {
+      "query": "A wide view of moving traffic on a highway",
+      "rank": 2,
+      "source_id": "a6d60b95f6a39936d0fbd006",
+      "source_filename": "20261001_055846_scene1_p1c2_chunk_0004_segment_002_of_006.mp4",
+      "source_in_sec": 5.0,
+      "source_out_sec": 10.0,
+      "relevant": true,
+      "review_note": "A wide elevated angle shows cars and trucks moving along the highway."
+    },
+    {
+      "query": "A wide view of moving traffic on a highway",
+      "rank": 3,
+      "source_id": "3ea7db4ff158acf2bfd32eea",
+      "source_filename": "20261001_055730_scene1_p1c2_chunk_0001_segment_005_of_006.mp4",
+      "source_in_sec": 20.0,
+      "source_out_sec": 25.0,
+      "relevant": true,
+      "review_note": "A high-angle wide shot shows highway vehicles progressing in both directions."
+    },
+    {
+      "query": "A wide view of moving traffic on a highway",
+      "rank": 4,
+      "source_id": "4d551c1994203c1b68c9f1a9",
+      "source_filename": "20261001_055612_scene1_p1c1_chunk_0008_segment_006_of_006.mp4",
+      "source_in_sec": 25.0,
+      "source_out_sec": 30.0,
+      "relevant": true,
+      "review_note": "An elevated wide view shows multi-lane traffic advancing along the highway."
+    },
+    {
+      "query": "A wide view of moving traffic on a highway",
+      "rank": 5,
+      "source_id": "5426b08545014901fce45013",
+      "source_filename": "20261001_055405_scene1_p1c1_chunk_0003_segment_003_of_006.mp4",
+      "source_in_sec": 10.0,
+      "source_out_sec": 15.0,
+      "relevant": true,
+      "review_note": "An elevated wide view shows vehicles moving through a divided highway."
+    }
+  ],
+  "limitations": [
+    "Three demo-selected broad queries, only 15 segments; not a held-out benchmark.",
+    "Several results show the same recording or location; relevance does not imply editorial diversity.",
+    "Sampled-frame assessment can miss brief events; this is not an independent full-video review.",
+    "No after-reingest result exists; no measured improvement is claimed."
+  ]
+}

@@ -8,6 +8,13 @@ set +a
 [[ "$USERNAME" == 'team-32' ]] || { echo 'Unexpected team namespace'; exit 1; }
 export KUBECONFIG=/config/team-32-k8s.yaml
 cd "$(dirname "$0")"
+# Keep a VM-side backup before replacing this app's temporary volume.
+backup_dir="$HOME/.local/state/clipscout"
+mkdir -p "$backup_dir"
+if kubectl -n team-32 get deployment clipscout-editorial >/dev/null 2>&1; then
+  kubectl -n team-32 exec deployment/clipscout-editorial -- tar -czf - -C /data . > "$backup_dir/app-data.tmp.tgz"
+  mv "$backup_dir/app-data.tmp.tgz" "$backup_dir/app-data.tgz"
+fi
 python3 - <<'PY'
 import base64, json, os, pathlib, subprocess
 name='clipscout-editorial'
@@ -26,7 +33,7 @@ credentials={'VSS_URL':internal_url,'VSS_USERNAME':os.environ['USERNAME'],'VSS_P
 apply({'apiVersion':'v1','kind':'Secret','metadata':meta('-vss'),'type':'Opaque',
        'data':{k:base64.b64encode(v.encode()).decode() for k,v in credentials.items()}})
 apply({'apiVersion':'apps/v1','kind':'Deployment','metadata':meta(),
-       'spec':{'replicas':1,'selector':{'matchLabels':{'app':name}},
+       'spec':{'replicas':1,'strategy':{'type':'Recreate'},'selector':{'matchLabels':{'app':name}},
                'template':{'metadata':{'labels':{'app':name}},'spec':{
                  'containers':[{'name':'app','image':'python:3.12-slim','imagePullPolicy':'IfNotPresent',
                    'workingDir':'/code','ports':[{'containerPort':8080}],
@@ -50,4 +57,16 @@ apply({'apiVersion':'networking.k8s.io/v1','kind':'Ingress','metadata':{
              'backend':{'service':{'name':name,'port':{'number':80}}}}]}}]}})
 PY
 kubectl -n team-32 rollout restart deployment/clipscout-editorial
-kubectl -n team-32 rollout status deployment/clipscout-editorial --timeout=55s
+ready=false
+for attempt in 1 2 3; do
+  if kubectl -n team-32 rollout status deployment/clipscout-editorial --timeout=55s; then
+    ready=true
+    break
+  fi
+done
+[[ "$ready" == true ]] || { echo "App rollout incomplete; backup retained at $backup_dir/app-data.tgz"; exit 1; }
+if [[ -f "$backup_dir/app-data.tgz" ]]; then
+  kubectl -n team-32 exec -i deployment/clipscout-editorial -- tar -xzf - -C /data < "$backup_dir/app-data.tgz"
+  kubectl -n team-32 exec deployment/clipscout-editorial -- python -c 'import os,signal; os.kill(1,signal.SIGHUP)'
+  echo 'Restored ClipScout catalog and exports from the VM backup.'
+fi

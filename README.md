@@ -14,6 +14,8 @@ Turn a shot request into reviewed footage, an ordered MP4 rough cut and a source
 
 The output is an archive montage. Sources can come from different places and times; it does not represent one continuous event. Capture time is not inferred from upload time.
 
+Search runs in the background so the cut remains usable during a slow upstream response. Successful results can be reused for five minutes, with their age shown and an explicit **Refresh from archive** control. The source shot list can be downloaded independently of MP4 rendering.
+
 ```mermaid
 flowchart LR
   A[Story brief and shot requests] --> B[VSS semantic search]
@@ -57,7 +59,7 @@ bash deploy.sh
 
 The script is deliberately scoped to **team-32**. It reads the existing `/config/*.config` and `/config/team-32-k8s.yaml`, discovers `video-backend-service`, and applies only ClipScout's ConfigMap, Secret, Deployment, Service and Ingress. It does not redeploy or modify the supplied VSS pipeline. Code is mounted through a ConfigMap; the container installs FFmpeg on startup. The ingress exposes `/app/` through the workshop App link.
 
-Deploying replaces the app pod and its temporary cache/export files. Download your MP4 and shot list before redeploying. Browser selections persist locally, but their cached media references may need a fresh search after replacement.
+`deploy.sh` backs up the current catalog, jobs, source lists and renders to the lab VM before replacing the app pod, then restores them and reloads the catalog. Wait for active exports to finish before deploying. If rollout fails, the backup remains under `~/.local/state/clipscout/app-data.tgz`; complete the rollout and restore that archive before deploying again. The app volume itself remains temporary: replacement outside this script can lose newer files. Download deliverables promptly. A persistent-volume trial bound successfully but failed to mount in the lab; the unused trial resources were removed.
 
 ## Repository map
 
@@ -73,17 +75,19 @@ Deploying replaces the app pod and its temporary cache/export files. Download yo
 | `tools/verify_reingest.py` | Read-only confirmation against indexed source URIs when job progress is unavailable |
 | `docs/OPERATIONS.md` | Re-ingest procedure, evaluation and demo handoff |
 | `docs/render-proof.json` | Measured first render gate; no footage included |
+| `docs/relevance-baseline.json` | Fifteen source-specific visual relevance labels and evaluation limits |
+| `tools/prepare_visual_eval.py` | Read-only extraction of timed frames from a frozen result set |
 
 ## Scope and limits
 
 - Browser-local drafts, not a shared multi-editor workspace. Each teammate can run the app or use the deployed desk with their own selections.
 - One render at a time, up to 12 clips. MP4 exports are silent by design; some archive sources do contain audio tracks, but speech is not assumed or transcribed.
 - Review is an editorial UI step, not a server-enforced approval/audit system. Similarity is a ranking score, not a confidence probability.
-- Search and media depend on the workshop VSS service. Temporary exports and in-memory jobs are lost when the app restarts. This is a workshop deployment behind the provided access boundary, not a hardened public service.
+- Search and media depend on the workshop VSS service. Finished job records are saved on disk; interrupted renders require retrying. Uncontrolled pod replacement can still lose temporary exports. This is a workshop deployment behind the provided access boundary, not a hardened public service.
 - Live-camera ingestion, standing-query triggers, replay simulation and crew dispatch are not implemented or claimed.
 
 ## Sponsored stack actually used
 
-ClipScout calls the provided **VSS search, authentication, media and dashboard APIs**. Those results use the workshop's NVIDIA video-understanding/embedding pipeline and VAST storage/database. The editorial re-ingest uses the supplied detector → reasoner → embedder → writer flow with a shot-focused custom prompt. FFmpeg creates the output cut; Codex was the development and re-ingest operator.
+ClipScout calls the provided **VSS search, authentication, media and dashboard APIs**. Those results use the workshop's NVIDIA video-understanding/embedding pipeline and VAST storage/database. The editorial re-ingest was submitted to the supplied detector → reasoner → embedder → writer flow with a shot-focused custom prompt; successful indexing and prompt application are still being verified. FFmpeg creates the output cut; Codex was the development and re-ingest operator.
 
 We do not claim an additional live-trigger integration, transcription, or sponsor tools that the application has not exercised. Source footage, credentials and private operational manifests are excluded from this repository.

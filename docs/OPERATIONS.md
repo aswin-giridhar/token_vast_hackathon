@@ -35,7 +35,7 @@ python3 tools/verify_reingest.py
 
 Completion requires all **60/60** destination segments indexed, expected metadata retained, and descriptions inspected for the requested editorial attributes. The existing source slots should be replaced without duplicate segment slots. A successful submission response alone is not completion.
 
-**Batch status at handoff, 17 October 2026:** all ten requests were accepted and 60 destination segments are present in storage, but **0/60 are indexed**. The progress API returns `404: Re-ingest job not found (backend may have restarted)`. The dashboard still shows 3,537 indexed clips, 60 pending segments and zero duplicate slots. Backend and model health checks pass; the detector, reasoner and writer logs show no POST requests over the checked 25-minute interval. Event delivery needs investigation by the workshop operator. Do not submit the batch again. The app demo uses the working existing index and does not depend on this enhancement completing.
+**Batch status at the Track A check, 17 October 2026:** all ten requests were accepted. The exact destination URI check now finds **41/60 in the indexed Explore view**, with metadata preserved for the matching rows. None of those descriptions contains the requested explicit `shot type` label, so prompt application is still unverified. The dashboard still reports 60 pending segments and zero re-ingest rows, which conflicts with the source-level check. The process-local progress API previously returned 404. Do not declare success from these conflicting signals and do not submit the batch again. The app demo uses the working existing index and does not depend on this enhancement completing.
 
 The 707-character prompt asks for observable subjects/actions, shot type, camera angle, framing, camera motion, subject motion, obstructions and useful action beats. It prohibits invented identities, emotions, intent, speech and unseen events. See the `PROMPT` constant in `tools/prepare_reingest.py` for its exact text.
 
@@ -45,7 +45,7 @@ The helpers capture top-five results for fixed editorial queries before and afte
 
 `precision@5 = relevant results among the first five / 5`
 
-Use the same queries, ranking parameters and reviewer rubric for both runs. Keep fewer-than-five results explicit. No precision improvement is claimed until the labels are completed. Only five minutes of a much larger archive are being re-described, so global search quality may not move substantially.
+Use the same queries, ranking parameters and reviewer rubric for both runs. Keep fewer-than-five results explicit. The basic three-query baseline now has 15 assistant-reviewed sampled-frame labels: 5/5 relevant for each query. See [EVALUATION.md](EVALUATION.md) for the rubric and substantial limitations. This does not measure improvement or the more demanding editorial-query set. Only five minutes of a much larger archive are being re-described, so global search quality may not move substantially.
 
 ## Verification performed
 
@@ -54,6 +54,8 @@ Use the same queries, ranking parameters and reviewer rubric for both runs. Keep
 - Deployed browser flow: real searches for cyclist, pedestrians and highway traffic; source previews; explicit review; three-shot coverage; sequence reorder and restore; MP4 export.
 - Scene-gap check: a marathon finish request produced unsuitable street candidates; marking the gap kept coverage at 3/4 and left the three-shot cut unchanged.
 - App render: 15.000 seconds, 360 frames, 1280×720 at 24 fps, H.264, no audio; FFmpeg decode completed without errors.
+- Source-list download: both the independent list and rendered-job list downloaded through the Codex browser. Labels, parent-relative source times and cumulative cut times match the three-shot sequence.
+- Seven regression tests pass, covering source mapping, background-search reuse/cache/refresh/failure, download attachment and catalog/job restoration.
 
 ## Protect before adding scope
 
