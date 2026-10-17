@@ -8,6 +8,7 @@ Turn a shot request into reviewed footage, an ordered MP4 rough cut and a source
 
 1. Enter a story brief and shot requests. The starter story is **Urban movement**: cyclist, pedestrians crossing, wide highway traffic.
 2. Search the actual VSS archive. Results retain the ranked segment's source, parent clip, original timecodes, camera and location.
+   **Suggest story edit** sends the found candidates' descriptions to W&B inference and proposes a sequence and potential gaps. Suggestions do not change the cut or approve footage.
 3. Preview a source and explicitly approve it. A request becomes covered only after editorial approval.
 4. If candidates do not fit, mark a **scene gap**. The request stays open; no substitute is added automatically.
 5. Reorder or remove approved shots, preview the sequence and export a silent **1280×720, 24 fps H.264 MP4** with a JSON source shot list.
@@ -38,6 +39,9 @@ Set these environment variables through your local shell or secret manager, usin
 | `VSS_URL` | Reachable VSS backend base URL |
 | `VSS_USERNAME` | Team login |
 | `VSS_PASSWORD` | Team password |
+| `WANDB_API_KEY` | W&B serverless inference key for editorial advice |
+| `WANDB_INFERENCE_MODEL` | Optional model ID; default `meta-llama/Llama-3.1-8B-Instruct` |
+| `WANDB_INFERENCE_PROJECT` | Optional W&B `team/project` for usage tracking |
 | `PORT` | Optional HTTP port, default `8080` |
 | `DATA_DIR` | Optional cache/export directory; default `/tmp/clipscout` |
 
@@ -67,6 +71,7 @@ The script is deliberately scoped to **team-32**. It reads the existing `/config
 | --- | --- |
 | `main.py` | VSS proxy, source catalog, bounded render jobs and downloads |
 | `index.html` | Brief, shot requests, evidence review, scene gaps and cut UI |
+| `editorial_advisor.py` | W&B recommendations with validated source IDs and mandatory review |
 | `deploy.sh` | Team-32 Kubernetes deployment |
 | `test_main.py` | Evidence/source mapping regression checks |
 | `tools/render_spike.py` | Freeze three search results, probe sources, render and extract boundary frames |
@@ -91,3 +96,5 @@ The script is deliberately scoped to **team-32**. It reads the existing `/config
 ClipScout calls the provided **VSS search, authentication, media and dashboard APIs**. Those results use the workshop's NVIDIA video-understanding/embedding pipeline and VAST storage/database. The editorial re-ingest was submitted to the supplied detector → reasoner → embedder → writer flow with a shot-focused custom prompt; successful indexing and prompt application are still being verified. FFmpeg creates the output cut; Codex was the development and re-ingest operator.
 
 We do not claim an additional live-trigger integration, transcription, or sponsor tools that the application has not exercised. Source footage, credentials and private operational manifests are excluded from this repository.
+
+**Our application-level W&B call is live-verified.** The Track B SpaceXAI/Cursor agent contributed the advisor in [PR #1](https://github.com/aswin-giridhar/token_vast_hackathon/pull/1); Track A added server/UI integration and ran it with the lab account. [Live-call evidence](docs/wandb-live-verification.json), [sponsor evidence](docs/SPONSOR_EVIDENCE.md), and [evaluation limits](docs/EVALUATION.md) document the actual use.

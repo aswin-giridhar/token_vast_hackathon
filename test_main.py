@@ -130,6 +130,29 @@ class EvidenceTests(unittest.TestCase):
         self.assertEqual(app.JOBS['finished']['status'], 'done')
         self.assertEqual(app.JOBS['interrupted']['status'], 'error')
 
+    def test_advice_uses_server_caption_and_rejects_unknown_sources(self):
+        clip = app.normalize({'source': 's3://test/advice.mp4', 'reasoning_content': 'A real cyclist.'})
+        payload = {'brief': 'City story', 'requests': [{'id': 'bike', 'label': 'Cyclist', 'query': 'cycling'}],
+            'candidates': [{'id': clip['id'], 'request_id': 'bike', 'reason': 'Client invented a marathon.'}]}
+        with patch.object(app, 'suggest_edit', return_value={'review_required': True}) as call:
+            result = app.editorial_advice(payload)
+            self.assertEqual(call.call_args.args[2][0]['reason'], 'A real cyclist.')
+            self.assertTrue(result['review_required'])
+            self.assertEqual(result['candidate_count'], 1)
+        payload['candidates'][0]['id'] = 'unknown'
+        with self.assertRaises(ValueError):
+            app.editorial_advice(payload)
+
+    def test_advice_failure_does_not_mutate_cut_or_hold_inference_lock(self):
+        payload = {'requests': [{'id': 'bike'}], 'candidates': []}
+        before = dict(app.CATALOG)
+        with patch.object(app, 'suggest_edit', side_effect=app.AdvisorError('Unavailable')):
+            with self.assertRaises(app.AdvisorError):
+                app.editorial_advice(payload)
+        self.assertEqual(app.CATALOG, before)
+        self.assertTrue(app.ADVICE_LOCK.acquire(blocking=False))
+        app.ADVICE_LOCK.release()
+
 
 if __name__ == '__main__':
     unittest.main()

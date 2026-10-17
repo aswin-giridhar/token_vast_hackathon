@@ -14,6 +14,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.error import HTTPError
 from urllib.parse import parse_qs, urlencode, urlparse
 from urllib.request import Request, urlopen
+from editorial_advisor import AdvisorError, suggest_edit
 
 ROOT = Path(__file__).parent
 DATA = Path(os.environ.get("DATA_DIR", "/tmp/clipscout"))
@@ -25,6 +26,7 @@ SEARCH_JOBS = {}
 SEARCH_CACHE = {}
 LOCK = threading.RLock()
 RENDER_LOCK = threading.Lock()
+ADVICE_LOCK = threading.Lock()
 SEARCH_SLOTS = threading.BoundedSemaphore(2)
 
 
@@ -221,6 +223,42 @@ def source_manifest(ids, labels=None, brief=""):
     return {"brief": brief, "mode": "reviewed_archive_montage", "audio": "silent", "shots": shots}
 
 
+def editorial_advice(payload):
+    requests = payload.get("requests")
+    refs = payload.get("candidates")
+    if not isinstance(requests, list) or not 1 <= len(requests) <= 12:
+        raise ValueError("Choose 1–12 shot requests for advice.")
+    if not isinstance(refs, list) or len(refs) > 60:
+        raise ValueError("Choose at most 60 existing candidates.")
+    clean_requests, seen = [], set()
+    for item in requests:
+        if not isinstance(item, dict) or not isinstance(item.get("id"), str) or not 1 <= len(item["id"]) <= 120 or item["id"] in seen:
+            raise ValueError("Shot requests need unique IDs.")
+        seen.add(item["id"])
+        clean_requests.append({"id": item["id"], "label": str(item.get("label", ""))[:120], "query": str(item.get("query", ""))[:600]})
+    candidates = []
+    for ref in refs:
+        if not isinstance(ref, dict) or not isinstance(ref.get("id"), str) or not isinstance(ref.get("request_id"), str):
+            raise ValueError("Invalid candidate reference.")
+        clip = CATALOG.get(ref["id"])
+        if clip is None or ref["request_id"] not in seen:
+            raise ValueError("A candidate is unavailable. Search again before requesting advice.")
+        # Never trust client-provided captions, timecodes or media URLs.
+        candidates.append({k: clip[k] for k in ("id", "reason", "camera", "location", "in", "out")})
+        candidates[-1]["request_id"] = ref["request_id"]
+    if not ADVICE_LOCK.acquire(blocking=False):
+        raise AdvisorError("An editorial advice request is already running. Please wait.")
+    started = time.monotonic()
+    try:
+        advice = suggest_edit(str(payload.get("brief", ""))[:2000], clean_requests, candidates)
+        advice["elapsed_ms"] = round((time.monotonic() - started) * 1000)
+        advice["candidate_count"] = len(candidates)
+        advice["generated_at"] = time.time()
+        return advice
+    finally:
+        ADVICE_LOCK.release()
+
+
 def render(job_id, ids):
     job = JOBS[job_id]
     try:
@@ -385,6 +423,13 @@ class Handler(BaseHTTPRequestHandler):
             payload = json.loads(self.rfile.read(length))
             if not isinstance(payload, dict):
                 return self.reply(400, {"error": "JSON object required"})
+            if path == "/api/advice":
+                try:
+                    return self.reply(200, editorial_advice(payload))
+                except ValueError as error:
+                    return self.reply(400, {"error": str(error)})
+                except AdvisorError as error:
+                    return self.reply(502, {"error": str(error)})
             if path in ("/api/search", "/api/search/start"):
                 query = str(payload.get("query", "")).strip()
                 if not 3 <= len(query) <= 600:

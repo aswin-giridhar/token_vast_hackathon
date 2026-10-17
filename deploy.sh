@@ -24,12 +24,18 @@ def apply(obj):
 def meta(suffix=''):
     return {'name':name+suffix,'namespace':ns,'labels':{'app':name,'app.kubernetes.io/managed-by':'clipscout'}}
 apply({'apiVersion':'v1','kind':'ConfigMap','metadata':meta('-code'),
-       'data':{n:pathlib.Path(n).read_text() for n in ['main.py','index.html']}})
+       'data':{n:pathlib.Path(n).read_text() for n in ['main.py','index.html','editorial_advisor.py']}})
 # The workshop ingress hostname resolves on the VM, but not in pod DNS.
 # Resolve the existing VSS service; do not change the shared VSS deployment.
 service=json.loads(subprocess.check_output(['kubectl','-n',ns,'get','service','video-backend-service','-o','json']))
 internal_url='http://'+service['metadata']['name']+':'+str(service['spec']['ports'][0]['port'])
 credentials={'VSS_URL':internal_url,'VSS_USERNAME':os.environ['USERNAME'],'VSS_PASSWORD':os.environ['PASSWORD']}
+if os.environ.get('WANDB_API_KEY'):
+    credentials['WANDB_API_KEY']=os.environ['WANDB_API_KEY']
+for key in ('WANDB_INFERENCE_MODEL','WANDB_INFERENCE_BASE_URL','WANDB_INFERENCE_PROJECT'):
+    if os.environ.get(key): credentials[key]=os.environ[key]
+if 'WANDB_INFERENCE_PROJECT' not in credentials and os.environ.get('WANDB_TEAM') and os.environ.get('WANDB_PROJECT'):
+    credentials['WANDB_INFERENCE_PROJECT']=os.environ['WANDB_TEAM']+'/'+os.environ['WANDB_PROJECT']
 apply({'apiVersion':'v1','kind':'Secret','metadata':meta('-vss'),'type':'Opaque',
        'data':{k:base64.b64encode(v.encode()).decode() for k,v in credentials.items()}})
 apply({'apiVersion':'apps/v1','kind':'Deployment','metadata':meta(),

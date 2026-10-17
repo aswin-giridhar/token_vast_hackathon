@@ -1,0 +1,40 @@
+{
+  "verified_at_utc": "2026-10-17T14:11:39Z",
+  "elapsed_sec": 1.73,
+  "request_count": 4,
+  "candidate_count": 3,
+  "result": {
+    "suggestions": [
+      {
+        "request_id": "cyclist",
+        "candidate_id": "0ef7377ac34f6d2de4999ffd",
+        "why": "The scene is captured from a cyclist\u2019s perspective, showing the rider\u2019s hands on the handlebars and the view ahead along a city street."
+      },
+      {
+        "request_id": "crossing",
+        "candidate_id": "6f6878ff761e98e8880c1d97",
+        "why": "The scene is a city street intersection with a marked crosswalk."
+      },
+      {
+        "request_id": "traffic",
+        "candidate_id": "cf9b896f15ff01d496cb7ca3",
+        "why": "The scene is a multi-lane highway with traffic flowing in both directions."
+      }
+    ],
+    "potential_gaps": [
+      {
+        "request_id": "finish",
+        "why": "No supplied candidate was recommended for this request."
+      }
+    ],
+    "proposed_order": [
+      "0ef7377ac34f6d2de4999ffd",
+      "6f6878ff761e98e8880c1d97",
+      "cf9b896f15ff01d496cb7ca3"
+    ],
+    "review_required": true,
+    "provider": "wandb",
+    "model": "meta-llama/Llama-3.1-8B-Instruct",
+    "inference_called": true
+  }
+}
