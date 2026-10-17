@@ -1,0 +1,97 @@
+/* ClipScout demo theme — drop-in override.
+ *
+ * Paste this block at the END of the existing <style> in index.html.
+ * Nothing else changes: no markup, no JavaScript, no new request.
+ * Every rule below only overrides an existing one, so deleting this
+ * block restores the current design exactly.
+ *
+ * One optional markup hook, for section 3 only — add inside #find-panel,
+ * directly after the .searchbox form:
+ *   <div id="archive-summary"><span class="eyebrow">What the archive
+ *   returned</span><span id="archive-summary-text"></span><span
+ *   class="caveat">Model-generated summary of the retrieved segments.
+ *   Verify against the footage before relying on it.</span></div>
+ * and in search(), after `results = data.clips;`:
+ *   $('archive-summary-text').textContent = data.summary || '';
+ *   $('archive-summary').classList.toggle('visible', !!data.summary);
+ * The backend already returns `summary`; today the UI discards it.
+ */
+
+/* 1. TYPE SCALE — legible on a projector at three metres.
+      Every size below 13px was raised; nothing structural moved. */
+body{font-size:16px}
+.eyebrow{font-size:12px;letter-spacing:1.5px}
+.tag{font-size:12px}
+.team,.results-head p,.statusbar,.aside-note,.brief{font-size:13px}
+.shot{font-size:14px}
+.shot-state{font-size:12px}
+.shot-number{font-size:12px}
+.tab{font-size:15px}
+.tab-count{font-size:12px}
+.clip h3{font-size:14px}
+.description{font-size:13.5px;line-height:20px;height:60px}
+.clip-foot{font-size:12px}
+.footer{font-size:12px}
+.metric p{font-size:12px}
+
+/* 2. RECLAIM THE FOLD — the hero pushed the working area off screen.
+      Search and the first row of results now sit above it. */
+main{padding:22px 30px 24px}
+.hero{margin-bottom:16px;align-items:center}
+.hero h1{font-size:25px;letter-spacing:-.6px;line-height:1.2}
+/* Keep the <br>. Hiding it joins the two sentences with no space, and a
+   two-line 25px headline is still far shorter than the 52px original. */
+.hero p{display:none}
+.hero .eyebrow{display:none}
+.metric{padding-left:20px;text-align:right;border-left:1px solid var(--line)}
+.metric strong{font-size:22px;display:block;line-height:1.1}
+/* .hero p is hidden above and .metric sits inside .hero, so restore this one. */
+.metric p{display:block;margin:2px 0 0;letter-spacing:.6px;white-space:nowrap}
+.tabs{margin-bottom:16px}
+.searchbox{padding:7px;box-shadow:0 1px 3px #20332d0f}
+.searchbox input{font-size:16px;padding:11px}
+.results-head{margin:16px 0 12px}
+
+/* 3. THE ARCHIVE SUMMARY — the backend already returns
+      llm_synthesis.response and the UI discards it. One slot for it.
+      Needs the single markup line documented in design/README.md. */
+#archive-summary{display:none;margin:14px 0 0;padding:14px 16px;background:#fff;
+  border:1px solid var(--line);border-left:3px solid var(--green);border-radius:9px;font-size:14.5px}
+#archive-summary.visible{display:block}
+#archive-summary .eyebrow{display:block;color:var(--green);margin-bottom:6px}
+#archive-summary .caveat{display:block;margin-top:8px;font-size:12px;color:var(--muted)}
+
+/* 4. RELEVANCE AS A BAR — a bare "0.57" reads as a confidence
+      probability. It is a ranking score. Show rank position and keep
+      the number available, but stop implying precision. */
+.score{font-size:12px;display:flex;align-items:center;gap:7px;color:var(--muted);white-space:nowrap}
+.score .bar{width:46px;height:5px;border-radius:3px;background:#dfe5db;overflow:hidden;display:inline-block}
+.score .bar i{display:block;height:100%;background:var(--green)}
+
+/* 5. THE SCENE GAP — this is the product's strongest claim and it was
+      a small secondary button hidden below the grid. Make it a
+      standing, first-class action. */
+#mark-gap{display:flex!important;width:100%;margin-top:18px;align-items:center;
+  justify-content:space-between;gap:16px;padding:16px 20px;font-size:15px;text-align:left;
+  background:#fdf4f0;border:1px solid #f0c9ba;border-left:3px solid var(--orange);border-radius:10px}
+#mark-gap:hover{background:#fbe9e2;border-color:var(--orange)}
+#mark-gap .gap-title{display:block;font-weight:700;color:var(--ink)}
+#mark-gap .gap-sub{display:block;font-weight:400;font-size:13px;color:var(--muted);margin-top:3px}
+#mark-gap .gap-cta{flex-shrink:0;color:var(--orange);font-weight:700}
+#mark-gap.hidden{display:none!important}
+
+/* 6. COVERAGE AS A BAR — the core progress signal was 12px of grey
+      text. It is what the whole desk is working toward. */
+#coverage{font-size:13px;font-weight:700;color:var(--ink)}
+.coverage-track{height:6px;border-radius:4px;background:#dcdfd6;overflow:hidden;margin:10px 0 4px}
+.coverage-track i{display:block;height:100%;background:var(--green);transition:width .25s}
+
+/* 7. CARD LEGIBILITY — provenance is the pitch, so surface camera and
+      timecode instead of burying them in 11px grey. */
+.clip{transition:border-color .15s,box-shadow .15s}
+.clip:hover{border-color:#c3cdbf;box-shadow:0 2px 10px #20332d0f}
+.clip .location{font-size:12px}
+.clip-foot{font-variant-numeric:tabular-nums;color:var(--ink)}
+.clip-foot .tc{font-weight:650}
+
+@media(max-width:1450px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}

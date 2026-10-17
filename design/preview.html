@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ClipScout — design preview</title>
+<style>
+/* ============================================================
+   Base: the existing ClipScout stylesheet, abridged to the rules
+   the preview needs. Unchanged from index.html.
+   ============================================================ */
+:root{--ink:#20332d;--muted:#6f7b72;--paper:#f4f3ed;--line:#dddeda;--green:#195e46;--lime:#d4ee95;--orange:#d95b37}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.5 'Segoe UI',Arial,sans-serif}
+button,input,textarea{font:inherit}
+button{cursor:pointer;border:1px solid var(--line);background:#fff;border-radius:8px;padding:10px 14px;color:var(--ink);font-weight:600}
+button:hover{border-color:var(--green);background:#f1f6ed}
+button.primary{background:var(--green);border-color:var(--green);color:#fff}
+button.small{font-size:12px;padding:6px 10px}
+button.text{background:transparent;border:0;padding:5px 0;color:var(--green)}
+input,textarea{border:1px solid var(--line);background:#fff;border-radius:8px;padding:10px;width:100%;color:var(--ink)}
+h1,h2,h3,p{margin:0}
+h2{font-size:21px;letter-spacing:-.5px}h3{font-size:16px}
+.muted{color:var(--muted)}
+.eyebrow{font-size:11px;letter-spacing:1.8px;font-weight:750;text-transform:uppercase}
+.tag{display:inline-block;font-size:11px;font-weight:650;padding:4px 8px;border-radius:5px;background:#e9eee5}
+.pill{display:inline-flex;gap:8px;align-items:center;padding:7px 11px;border:1px solid #d3ddd1;border-radius:30px;background:#f1f6eb;font-size:12px}
+.dot{width:7px;height:7px;background:#6d9829;border-radius:50%}
+header{height:76px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 34px}
+.brand{display:flex;align-items:center;gap:10px;font-size:23px;font-weight:750;letter-spacing:-1px}
+.brand-icon{height:31px;width:31px;border-radius:7px;background:var(--green);display:grid;place-items:center;color:var(--lime);font-size:17px}
+.header-right{display:flex;gap:16px;align-items:center}
+.team{font-size:12px;color:var(--muted)}
+.layout{display:grid;grid-template-columns:290px 1fr;min-height:calc(100vh - 76px)}
+aside{padding:29px 22px;background:#eceee6;border-right:1px solid var(--line)}
+.aside-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.brief{font-size:13px;background:#f8faf4;min-height:94px;resize:vertical}
+.section-label{margin:28px 0 12px;display:flex;justify-content:space-between;align-items:center}
+.shot{display:block;width:100%;text-align:left;padding:14px;margin-bottom:9px;background:#f8f9f4;border:1px solid #dce1d5;border-radius:9px;font-size:13px;font-weight:500}
+.shot.active{border-color:var(--green);box-shadow:inset 3px 0 var(--green);background:#fff}
+.shot-top{display:flex;gap:9px;align-items:center;margin-bottom:7px}
+.shot-number{font-size:10px;color:var(--muted);font-weight:700}
+.shot-state{display:block;font-size:11px;color:var(--muted);margin-left:23px}
+.shot-state.done{color:var(--green)}
+.aside-note{font-size:12px;color:var(--muted);margin-top:25px;border-top:1px solid var(--line);padding-top:17px}
+main{padding:35px 34px 24px;min-width:0}
+.hero{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:28px}
+.hero h1{font-size:clamp(32px,3.7vw,52px);line-height:1.1;letter-spacing:-2px;font-weight:650}
+.hero p{margin-top:12px;max-width:540px;color:var(--muted)}
+.metric{flex-shrink:0;border-left:1px solid var(--line);padding-left:26px}
+.metric strong{font-size:35px;letter-spacing:-1px;font-weight:500}
+.metric p{font-size:11px;letter-spacing:1px;margin-top:0;text-transform:uppercase}
+.tabs{display:flex;gap:23px;border-bottom:1px solid var(--line);margin-bottom:23px}
+.tab{border:0;border-radius:0;padding:12px 0;background:transparent;font-size:13px;color:var(--muted);border-bottom:2px solid transparent}
+.tab.active{color:var(--green);border-color:var(--green)}
+.tab-count{font-size:10px;background:#dde5d5;padding:2px 6px;border-radius:20px;margin-left:4px}
+.searchbox{display:flex;gap:10px;background:#fff;padding:9px;border:1px solid var(--line);border-radius:10px}
+.searchbox input{border:0;outline:none;min-width:0}
+.results-head{display:flex;justify-content:space-between;align-items:center;margin:21px 0 14px;gap:15px}
+.results-head p{font-size:12px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}
+.clip{border:1px solid var(--line);border-radius:11px;overflow:hidden;background:#fff}
+.preview{aspect-ratio:16/9;background:#1c2924;position:relative;display:grid;place-items:center;color:#6d8078;font-size:12px}
+.preview .duration{position:absolute;bottom:9px;right:9px;background:#1b2829d9;color:#fff;padding:2px 6px;font-size:11px;border-radius:4px}
+.clip-body{padding:14px}
+.clip-top{display:flex;justify-content:space-between;gap:6px;align-items:center}
+.clip .location{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--green);font-weight:700}
+.score{font-size:10px;color:var(--muted)}
+.clip h3{margin:9px 0 7px;overflow-wrap:anywhere;font-size:13px}
+.description{font-size:12px;color:var(--muted);height:54px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;line-height:18px}
+.clip-foot{border-top:1px solid #edf0e7;margin-top:13px;padding-top:11px;display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11px}
+.statusbar{min-height:24px;font-size:12px;color:var(--muted);margin-top:16px}
+.footer{font-size:11px;color:var(--muted);display:flex;justify-content:space-between;gap:16px;margin-top:35px}
+
+/* ============================================================
+   demo-theme.css — the proposed override. Everything below this
+   line is the patch. Paste it at the end of the existing <style>.
+   ============================================================ */
+
+/* 1. TYPE SCALE — legible on a projector at three metres.
+      Every size below 13px was raised; nothing structural moved. */
+body{font-size:16px}
+.eyebrow{font-size:12px;letter-spacing:1.5px}
+.tag{font-size:12px}
+.team,.results-head p,.statusbar,.aside-note,.brief{font-size:13px}
+.shot{font-size:14px}
+.shot-state{font-size:12px}
+.shot-number{font-size:12px}
+.tab{font-size:15px}
+.tab-count{font-size:12px}
+.clip h3{font-size:14px}
+.description{font-size:13.5px;line-height:20px;height:60px}
+.clip-foot{font-size:12px}
+.footer{font-size:12px}
+.metric p{font-size:12px}
+
+/* 2. RECLAIM THE FOLD — the hero pushed the working area off screen.
+      Search and the first row of results now sit above it. */
+main{padding:22px 30px 24px}
+.hero{margin-bottom:16px;align-items:center}
+.hero h1{font-size:25px;letter-spacing:-.6px;line-height:1.2}
+/* Keep the <br>. Hiding it joins the two sentences with no space, and a
+   two-line 25px headline is still far shorter than the 52px original. */
+.hero p{display:none}
+.hero .eyebrow{display:none}
+.metric{padding-left:20px;text-align:right;border-left:1px solid var(--line)}
+.metric strong{font-size:22px;display:block;line-height:1.1}
+/* .hero p is hidden above and .metric sits inside .hero, so restore this one. */
+.metric p{display:block;margin:2px 0 0;letter-spacing:.6px;white-space:nowrap}
+.tabs{margin-bottom:16px}
+.searchbox{padding:7px;box-shadow:0 1px 3px #20332d0f}
+.searchbox input{font-size:16px;padding:11px}
+.results-head{margin:16px 0 12px}
+
+/* 3. THE ARCHIVE SUMMARY — the backend already returns
+      llm_synthesis.response and the UI discards it. One slot for it.
+      Needs the single markup line documented in design/README.md. */
+#archive-summary{display:none;margin:14px 0 0;padding:14px 16px;background:#fff;
+  border:1px solid var(--line);border-left:3px solid var(--green);border-radius:9px;font-size:14.5px}
+#archive-summary.visible{display:block}
+#archive-summary .eyebrow{display:block;color:var(--green);margin-bottom:6px}
+#archive-summary .caveat{display:block;margin-top:8px;font-size:12px;color:var(--muted)}
+
+/* 4. RELEVANCE AS A BAR — a bare "0.57" reads as a confidence
+      probability. It is a ranking score. Show rank position and keep
+      the number available, but stop implying precision. */
+.score{font-size:12px;display:flex;align-items:center;gap:7px;color:var(--muted);white-space:nowrap}
+.score .bar{width:46px;height:5px;border-radius:3px;background:#dfe5db;overflow:hidden;display:inline-block}
+.score .bar i{display:block;height:100%;background:var(--green)}
+
+/* 5. THE SCENE GAP — this is the product's strongest claim and it was
+      a small secondary button hidden below the grid. Make it a
+      standing, first-class action. */
+#mark-gap{display:flex!important;width:100%;margin-top:18px;align-items:center;
+  justify-content:space-between;gap:16px;padding:16px 20px;font-size:15px;text-align:left;
+  background:#fdf4f0;border:1px solid #f0c9ba;border-left:3px solid var(--orange);border-radius:10px}
+#mark-gap:hover{background:#fbe9e2;border-color:var(--orange)}
+#mark-gap .gap-title{display:block;font-weight:700;color:var(--ink)}
+#mark-gap .gap-sub{display:block;font-weight:400;font-size:13px;color:var(--muted);margin-top:3px}
+#mark-gap .gap-cta{flex-shrink:0;color:var(--orange);font-weight:700}
+#mark-gap.hidden{display:none!important}
+
+/* 6. COVERAGE AS A BAR — the core progress signal was 12px of grey
+      text. It is what the whole desk is working toward. */
+#coverage{font-size:13px;font-weight:700;color:var(--ink)}
+.coverage-track{height:6px;border-radius:4px;background:#dcdfd6;overflow:hidden;margin:10px 0 4px}
+.coverage-track i{display:block;height:100%;background:var(--green);transition:width .25s}
+
+/* 7. CARD LEGIBILITY — provenance is the pitch, so surface camera and
+      timecode instead of burying them in 11px grey. */
+.clip{transition:border-color .15s,box-shadow .15s}
+.clip:hover{border-color:#c3cdbf;box-shadow:0 2px 10px #20332d0f}
+.clip .location{font-size:12px}
+.clip-foot{font-variant-numeric:tabular-nums;color:var(--ink)}
+.clip-foot .tc{font-weight:650}
+
+@media(max-width:1450px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style></head>
+<body>
+<header>
+  <div class="brand"><span class="brand-icon">▸</span>ClipScout</div>
+  <div class="header-right"><span class="team">TEAM 32 · BUILDERS CHALLENGE</span>
+  <span class="pill"><span class="dot"></span>Archive connected</span></div>
+</header>
+<div class="layout">
+  <aside>
+    <div class="aside-top"><span class="eyebrow">The story</span><span class="tag">01</span></div>
+    <h2 style="margin-bottom:12px">Urban movement</h2>
+    <textarea class="brief">Build a short visual story about people moving through a city: cycling, crossing streets and the wider flow of traffic.</textarea>
+    <div class="section-label"><span class="eyebrow">Shot requests</span><span id="coverage">1 / 3 covered</span></div>
+    <div class="coverage-track"><i style="width:33%"></i></div>
+    <div style="margin-top:14px">
+      <button class="shot"><span class="shot-top"><span class="shot-number">01</span><strong>The cyclist</strong></span><span class="shot-state done">✓ Reviewed footage selected</span></button>
+      <button class="shot active"><span class="shot-top"><span class="shot-number">02</span><strong>Crossing paths</strong></span><span class="shot-state">Candidates found · review needed</span></button>
+      <button class="shot"><span class="shot-top"><span class="shot-number">03</span><strong>The wider picture</strong></span><span class="shot-state">Open · needs footage</span></button>
+    </div>
+    <button class="text">+ Add a shot request</button>
+    <div class="aside-note"><strong style="color:var(--ink)">The editor makes the call.</strong>
+    <p style="margin-top:7px">A request is covered when you review and approve a source clip for the cut.</p></div>
+  </aside>
+  <main>
+    <section class="hero">
+      <h1>Find the moment.<br>Build the story.</h1>
+      <div class="metric"><strong>32,111</strong><p>Indexed segments</p></div>
+    </section>
+    <nav class="tabs"><button class="tab active">Find moments</button><button class="tab">Your first cut <span class="tab-count">1</span></button></nav>
+    <div class="searchbox"><input value="Pedestrians crossing a street at a crosswalk"><button class="primary">Find footage ↗</button></div>
+
+    <div id="archive-summary" class="visible">
+      <span class="eyebrow">What the archive returned</span>
+      Six segments show pedestrians at marked crossings, mostly from fixed street cameras in San Francisco and a forward-facing drive in Toronto. Two show vehicles waiting while people cross; one shows a cyclist entering the same crossing.
+      <span class="caveat">Model-generated summary of the retrieved segments. Verify against the footage before relying on it.</span>
+    </div>
+
+    <div class="results-head">
+      <div><h2>Candidates for “Crossing paths”</h2><p>6 source clips · 1.4s search</p></div>
+      <span class="tag">REAL SOURCE CLIPS</span>
+    </div>
+    <div class="grid">
+      <article class="clip"><div class="preview">▶ source clip<span class="duration">5s</span></div>
+        <div class="clip-body"><div class="clip-top"><span class="location">san francisco</span>
+          <span class="score">#1<span class="bar"><i style="width:84%"></i></span></span></div>
+          <h3>sf_streets_cam-1</h3>
+          <p class="description">Pedestrians cross a marked crosswalk from left to right while two vehicles wait at the stop line. Overhead fixed camera, static, daylight, clear visibility.</p>
+          <div class="clip-foot"><span class="tc">00:12–00:17</span><button class="small">Review clip ↗</button></div></div></article>
+      <article class="clip"><div class="preview">▶ source clip<span class="duration">5s</span></div>
+        <div class="clip-body"><div class="clip-top"><span class="location">toronto</span>
+          <span class="score">#2<span class="bar"><i style="width:71%"></i></span></span></div>
+          <h3>pie_cam-3</h3>
+          <p class="description">Forward-facing drive approaches an intersection; a pedestrian steps into the crossing ahead of the vehicle. Camera is moving, handheld-equivalent motion.</p>
+          <div class="clip-foot"><span class="tc">02:41–02:46</span><button class="small">Review clip ↗</button></div></div></article>
+      <article class="clip"><div class="preview">▶ source clip<span class="duration">5s</span></div>
+        <div class="clip-body"><div class="clip-top"><span class="location">san francisco</span>
+          <span class="score">#3<span class="bar"><i style="width:63%"></i></span></span></div>
+          <h3>sf_streets_cam-3</h3>
+          <p class="description">A small group waits at the kerb, then crosses as traffic stops. Wide establishing framing, subjects small in frame, moderate background clutter.</p>
+          <div class="clip-foot"><span class="tc">00:03–00:08</span><button class="small">Review clip ↗</button></div></div></article>
+    </div>
+
+    <button id="mark-gap">
+      <span><span class="gap-title">None of these fit the shot?</span>
+      <span class="gap-sub">Record a scene gap. The request stays open and nothing is substituted into your cut.</span></span>
+      <span class="gap-cta">Mark scene gap →</span>
+    </button>
+
+    <div class="statusbar">Ranking position reflects semantic similarity, not confidence. Review the clip before adding it.</div>
+    <div class="footer"><span>VSS retrieval · NVIDIA video understanding · VAST archive</span><span>Human review before inclusion · Silent rough-cut export</span></div>
+  </main>
+</div>
+</body></html>
